@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#090a0d"><title>SGRP98 RaceBox</title>
+<style>
+:root{--red:#ff202b;--bg:#08090c;--panel:#12151b;--muted:#aeb4bf;--line:#303640}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#252a32 0,#090a0d 48%,#050608 100%);color:#f5f6f8;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px 14px 92px}
+header{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 18px}.brand{font-size:30px;font-weight:1000;font-style:italic;letter-spacing:-1.8px}.brand span{color:var(--red)}.sub{font-size:10px;letter-spacing:2px;color:#c2c7ce;font-weight:800}.gear{border:1px solid #3b414b;background:#151920;color:white;border-radius:15px;padding:12px;font-size:20px}
+.pill{display:inline-flex;align-items:center;gap:7px;background:#171c22;border:1px solid #333b45;border-radius:30px;padding:8px 12px;color:#cbd0d7;font-size:12px;font-weight:800}.dot{width:8px;height:8px;border-radius:50%;background:#777}.dot.ok{background:#23e36e;box-shadow:0 0 10px #23e36e}
+.card{background:linear-gradient(145deg,#171b22,#0d0f13);border:1px solid #353b45;border-radius:22px;padding:16px;margin:13px 0;box-shadow:0 10px 28px #0008;overflow:hidden}.speedbox{position:relative;text-align:center;padding:15px 8px 18px;border-color:#5a242a;background:radial-gradient(ellipse at 50% 100%,#381014 0,transparent 58%),linear-gradient(145deg,#171b22,#08090c)}
+.speedlabel{color:#c6cbd3;font-size:11px;letter-spacing:2px;font-weight:900}.speed{font-size:90px;line-height:1.05;font-weight:1000;font-style:italic;letter-spacing:-5px;text-shadow:0 0 22px #ff202b55}.unit{font-weight:900;color:#aeb4bf;letter-spacing:2px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.metric{background:#ffffff08;border:1px solid #ffffff0c;border-radius:13px;padding:10px 4px;text-align:center}.metric b{display:block;font-size:20px}.metric small{font-size:10px;color:#aeb4bf;font-weight:800;letter-spacing:.8px}
+.sectiontitle{font-size:14px;font-weight:1000;font-style:italic;letter-spacing:.8px;margin:0 0 12px}.sectiontitle span{color:var(--red)}
+button{border:0;color:#fff;font-weight:1000;font-size:15px;border-radius:15px;padding:17px 12px;width:100%;margin:6px 0;cursor:pointer}.primary{background:linear-gradient(180deg,#ff343e,#c9000c);box-shadow:0 0 18px #ff202b55;border:1px solid #ff626a}.secondary{background:linear-gradient(180deg,#242a32,#11151a);border:1px solid #737b86}.soft{background:#222831;border:1px solid #3b424d;padding:12px;font-size:13px}
+.info{font-size:12px;line-height:1.5;color:#b7bdc6;background:#ffffff08;border-radius:13px;padding:12px;margin-top:9px}.checkpoint{display:flex;justify-content:space-between;gap:8px;padding:10px 5px;border-bottom:1px solid #ffffff12;font-size:13px}.checkpoint:last-child{border:0}.checkpoint strong{color:#fff}.checkpoint em{color:#aeb4bf;font-style:normal}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.tabs{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(3,1fr);background:#090b0ff2;border-top:1px solid #3b424d;padding:9px 8px calc(9px + env(safe-area-inset-bottom));backdrop-filter:blur(14px);z-index:5}.tab{background:none;color:#929aa5;margin:0;padding:8px 2px;font-size:11px;border-radius:10px}.tab.active{color:var(--red);background:#ff202b12}.tab b{display:block;font-size:19px}.page{display:none}.page.active{display:block}.runrow{padding:12px 5px;border-bottom:1px solid #ffffff12;font-size:13px}.runrow:last-child{border:0}.muted{color:var(--muted)}input{accent-color:var(--red)}
+</style>
+</head>
+<body>
+<header><div><div class="brand">RACE<span>BOX</span></div><div class="sub">SECRET GARAGE 98 · GPS DRAG TIMER</div></div><button class="gear" onclick="showPage('settings')">⚙</button></header>
+<div class="row"><div class="pill"><i class="dot" id="gpsdot"></i><span id="gpslabel">GPS BELUM AKTIF</span></div><div class="pill">SGRP98</div></div>
+<main id="home" class="page active">
+<section class="card speedbox"><div class="speedlabel">GPS REAL-TIME SPEED</div><div class="speed" id="speed">0</div><div class="unit">KM/J</div>
+<div class="metrics"><div class="metric"><small>WAKTU RUN</small><b id="timer">00:00.00</b></div><div class="metric"><small>JARAK</small><b id="distance">0 m</b></div><div class="metric"><small>AKURASI GPS</small><b id="accuracy">-- m</b></div></div></section>
+<section class="card"><div class="sectiontitle"><span>◆</span> DRAG METER</div><div class="row"><b>Checkpoint berikutnya</b><b id="nextcp" style="color:var(--red)">50 ft</b></div>
+<button class="primary" id="startBtn" onclick="armRun()">▶ &nbsp; START DRAG</button><button class="secondary" id="stopBtn" onclick="stopRun()" disabled>■ &nbsp; STOP & SIMPAN RUN</button>
+<div class="info" id="status">Aktifkan GPS presisi. Timer mulai otomatis saat motor bergerak melewati 3 km/j. Tetap berkendara dengan aman dan gunakan ponsel dalam posisi terpasang.</div></section>
+<section class="card"><div class="sectiontitle"><span>◉</span> HASIL CHECKPOINT</div><div id="cps"><div class="muted">Belum ada hasil. Mulai drag untuk merekam checkpoint.</div></div></section>
+</main>
+<section id="history" class="page"><div class="card"><div class="sectiontitle"><span>◷</span> RIWAYAT RUN</div><div id="historyList"></div><button class="soft" onclick="exportRuns()">⇩ EKSPOR CSV</button></div></section>
+<section id="settings" class="page"><div class="card"><div class="sectiontitle"><span>⚙</span> PENGATURAN</div><p class="muted">Checkpoint aktif: 50 ft, 100 m, 201 m, 402 m.</p><p class="muted">Kecepatan awal deteksi gerak: 3 km/j. Data disimpan lokal di perangkat ini.</p><button class="secondary" onclick="clearRuns()">HAPUS RIWAYAT</button><div class="info">Catatan: akurasi pengukuran bergantung pada kualitas GPS, cuaca, lokasi terbuka, dan frekuensi pembaruan lokasi. Aplikasi ini bukan alat ukur tersertifikasi.</div></div></section>
+<nav class="tabs"><button class="tab active" id="tabhome" onclick="showPage('home')"><b>⌂</b>Beranda</button><button class="tab" id="tabhistory" onclick="showPage('history')"><b>▤</b>Riwayat</button><button class="tab" id="tabsettings" onclick="showPage('settings')"><b>☷</b>Pengaturan</button></nav>
+<script>
+const checkpoints=[15.24,100,201,402]; // meters
+let watchId=null, armed=false,running=false,startTime=0,lastPoint=null,distance=0,topSpeed=0,runPoints=[],cpDone={},lastUi=0;
+const $=id=>document.getElementById(id);
+function fmt(t){let s=t/1000;return String(Math.floor(s/60)).padStart(2,'0')+':'+(s%60).toFixed(2).padStart(5,'0')}
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(p).classList.add('active');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));if($('tab'+p))$('tab'+p).classList.add('active');if(p==='history')renderHistory()}
+function setGps(ok,label){$('gpsdot').className='dot'+(ok?' ok':'');$('gpslabel').textContent=label}
+function armRun(){if(!navigator.geolocation){$('status').textContent='Browser/perangkat tidak mendukung GPS.';return}if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}
+armed=true;running=false;distance=0;topSpeed=0;lastPoint=null;runPoints=[];cpDone={};$('cps').innerHTML='';$('timer').textContent='00:00.00';$('distance').textContent='0 m';$('nextcp').textContent='50 ft';$('startBtn').disabled=true;$('stopBtn').disabled=false;$('status').textContent='Mencari sinyal GPS… Timer otomatis dimulai saat kecepatan melewati 3 km/j.';
+watchId=navigator.geolocation.watchPosition(onPosition,err=>{$('status').textContent='GPS error: '+err.message+' — pastikan izin lokasi aktif dan GPS menyala.';setGps(false,'GPS ERROR')},{enableHighAccuracy:true,maximumAge:0,timeout:15000});}
+function onPosition(pos){const c=pos.coords,now=pos.timestamp||Date.now(),acc=c.accuracy||999,speed=(c.speed!=null&&c.speed>=0)?c.speed*3.6:0;$('accuracy').textContent=Math.round(acc)+' m';setGps(true,'GPS LOCKED');
+if(acc>35){$('status').textContent='Sinyal GPS kurang presisi ('+Math.round(acc)+' m). Cari area terbuka untuk hasil lebih baik.';return}
+$('speed').textContent=Math.round(speed);if(armed&&!running&&speed>=3){running=true;startTime=now;lastPoint={lat:c.latitude,lon:c.longitude,time:now};$('status').textContent='RUN BERJALAN — checkpoint dihitung dari jarak GPS.'}
+if(!running)return;
+if(lastPoint){let d=haversine(lastPoint.lat,lastPoint.lon,c.latitude,c.longitude);let dt=(now-lastPoint.time)/1000;let calc=(dt>0&&dt<5)?d/dt*3.6:0;let v=speed||calc;
+if(d<100&&dt>0&&dt<5){distance+=d;topSpeed=Math.max(topSpeed,v);checkCheckpoints(now,v)}
+}
+lastPoint={lat:c.latitude,lon:c.longitude,time:now};runPoints.push({time:now,distance,speed});if(now-lastUi>150){$('timer').textContent=fmt(now-startTime);$('distance').textContent=distance.toFixed(1)+' m';lastUi=now}
+}
+function haversine(a,b,c,d){const R=6371000,to=x=>x*Math.PI/180,dl=to(c-a),dn=to(d-b);let q=Math.sin(dl/2)**2+Math.cos(to(a))*Math.cos(to(c))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
+function checkCheckpoints(now,v){checkpoints.forEach(m=>{if(!cpDone[m]&&distance>=m){cpDone[m]=true;let elapsed=now-startTime;let label=m===15.24?'50 ft':m+' m';let div=document.createElement('div');div.className='checkpoint';div.innerHTML='<strong>'+label+'</strong><em>'+Math.round(v)+' KM/J</em><b>'+fmt(elapsed)+'</b>';$('cps').prepend(div)}});let next=checkpoints.find(m=>!cpDone[m]);$('nextcp').textContent=next?(next===15.24?'50 ft':next+' m'):'Semua checkpoint selesai'}
+function stopRun(){if(!armed)return;if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}let elapsed=running?Date.now()-startTime:0;let run={date:new Date().toLocaleString('id-ID'),distance:+distance.toFixed(1),topSpeed:Math.round(topSpeed),time:elapsed,checkpoints:cpDone};if(running&&distance>0){let a=JSON.parse(localStorage.getItem('sgrp98runs')||'[]');a.unshift(run);localStorage.setItem('sgrp98runs',JSON.stringify(a.slice(0,100)));$('status').textContent='Run tersimpan di perangkat. Jarak '+run.distance+' m · '+run.topSpeed+' KM/J.'}else{$('status').textContent='Run dihentikan sebelum motor terdeteksi bergerak.'}armed=false;running=false;$('startBtn').disabled=false;$('stopBtn').disabled=true;renderHistory()}
+function renderHistory(){let a=JSON.parse(localStorage.getItem('sgrp98runs')||'[]');$('historyList').innerHTML=a.length?a.map(r=>'<div class="runrow"><div class="row"><b>'+r.distance+' m</b><b>'+r.topSpeed+' KM/J</b><b>'+fmt(r.time)+'</b></div><small class="muted">'+r.date+'</small></div>').join(''):'<p class="muted">Belum ada run tersimpan.</p>'}
+function clearRuns(){if(confirm('Hapus semua riwayat run?')){localStorage.removeItem('sgrp98runs');renderHistory()}}
+function exportRuns(){let a=JSON.parse(localStorage.getItem('sgrp98runs')||'[]');let csv='Tanggal,Jarak_m,TopSpeed_KMJ,Waktu_ms\\n'+a.map(r=>[JSON.stringify(r.date),r.distance,r.topSpeed,r.time].join(',')).join('\\n');let blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),x=document.createElement('a');x.href=url;x.download='SGRP98-riwayat.csv';x.click();URL.revokeObjectURL(url)}
+renderHistory();
+</script></body></html>
